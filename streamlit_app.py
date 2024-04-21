@@ -26,7 +26,7 @@ class SimpleCNN(nn.Module):
         return x
 
 model = SimpleCNN()
-state_dict = torch.load('weights/bird_weights.pth')
+state_dict = torch.load('bird_weights.pth')
 model.load_state_dict(state_dict)
 model.eval()
 
