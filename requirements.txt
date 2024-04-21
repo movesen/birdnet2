@@ -1,0 +1,7 @@
+torch.nn.functional
+torch.nn
+torchvision
+torch
+PIL
+pandas
+streamlit
