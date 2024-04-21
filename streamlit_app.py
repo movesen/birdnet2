@@ -2,11 +2,8 @@ import streamlit as st
 from PIL import Image
 import torch
 from torchvision import transforms
-import torchvision.models as models
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
 
 class SimpleCNN(nn.Module):
     def __init__(self):
@@ -25,10 +22,16 @@ class SimpleCNN(nn.Module):
         x = self.fc2(x)
         return x
 
-model = SimpleCNN()
-state_dict = torch.load('bird_weights.pth')
-model.load_state_dict(state_dict)
-model.eval()
+# Load the trained model
+@st.cache_resource
+def load_model():
+    model = SimpleCNN()
+    state_dict = torch.load('bird_weights.pth', map_location=torch.device('cpu'))
+    model.load_state_dict(state_dict)
+    model.eval()
+    return model
+
+model = load_model()
 
 st.title('Animal Classification')
 st.write('Upload an image, and the CNN will predict the species.')
@@ -55,39 +58,37 @@ if uploaded_file is not None:
     with torch.no_grad():
         prediction = model(processed_image)
         _, predicted = torch.max(prediction.data, 1)
-    
-    #NAIVE LABEL ASSIGNMENT, PLS FIX
-    labels = {0: 'Anseriformes',
-            1: 'Sphenisciformes',
-            2: 'Gaviiformes',
-            3: 'Passeriformes',
-            4: 'Pelecaniformes',
-            5: 'Cuculiformes',
-            6: 'Gruiformes',
-            7: 'Charadriiformes',
-            8: 'Columbiformes',
-            9: 'Piciformes',
-            10: 'Procellariiformes',
-            11: 'Caprimulgiformes',
-            12: 'Accipitriformes',
-            13: 'Cathartiformes',
-            14: 'Opisthocomiformes',
-            15: 'Suliformes',
-            16: 'Trogoniformes',
-            17: 'Galliformes',
-            18: 'Coraciiformes',
-            19: 'Psittaciformes',
-            20: 'Podicipediformes',
-            21: 'Ciconiiformes',
-            22: 'Bucerotiformes',
-            23: 'Strigiformes',
-            24: 'Falconiformes',
-            25: 'Struthioniformes',
-            26: 'Musophagiformes',
-            27: 'Phoenicopteriformes',
-            28: 'Coliiformes',
-            29: 'Casuariiformes',
-            30: 'Otidiformes',
-            31: 'Galbuliformes'}
 
+    labels = {0: 'Anseriformes',
+        1: 'Sphenisciformes',
+        2: 'Gaviiformes',
+        3: 'Passeriformes',
+        4: 'Pelecaniformes',
+        5: 'Cuculiformes',
+        6: 'Gruiformes',
+        7: 'Charadriiformes',
+        8: 'Columbiformes',
+        9: 'Piciformes',
+        10: 'Procellariiformes',
+        11: 'Caprimulgiformes',
+        12: 'Accipitriformes',
+        13: 'Cathartiformes',
+        14: 'Opisthocomiformes',
+        15: 'Suliformes',
+        16: 'Trogoniformes',
+        17: 'Galliformes',
+        18: 'Coraciiformes',
+        19: 'Psittaciformes',
+        20: 'Podicipediformes',
+        21: 'Ciconiiformes',
+        22: 'Bucerotiformes',
+        23: 'Strigiformes',
+        24: 'Falconiformes',
+        25: 'Struthioniformes',
+        26: 'Musophagiformes',
+        27: 'Phoenicopteriformes',
+        28: 'Coliiformes',
+        29: 'Casuariiformes',
+        30: 'Otidiformes',
+        31: 'Galbuliformes'}
     st.write(f'Prediction: {labels[predicted.item()]}')
