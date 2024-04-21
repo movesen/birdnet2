@@ -1,5 +1,4 @@
 torchvision
 torch
-PIL
 pandas
 streamlit
